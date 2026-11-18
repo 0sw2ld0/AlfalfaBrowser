@@ -8,7 +8,7 @@ Control de un navegador del motor de Chrome para agentes de IA, con un único n�
 
 - Node.js 20 o superior
 - Un navegador del motor de Chrome: Google Chrome, Microsoft Edge, Brave, Chromium o Arc. Si no tienes ninguno, CuyBrowser puede descargar su propio Chromium una sola vez, cuando tú se lo pidas ([más abajo](#navegador)). No hace falta ninguna extensión: lo abre con un perfil propio, separado del tuyo
-- macOS. Linux necesita `zenity` o `kdialog` para aprobar acciones. En Linux y Windows solo se ejecutan las pruebas automáticas; el uso real no se ha probado
+- macOS. Linux necesita `zenity` o `kdialog` para aprobar acciones. En Linux y Windows solo se ejecutan las pruebas automáticas; el uso real no se ha probado. En Windows, sigue [estos pasos](#windows)
 
 ## Instalación
 
@@ -24,7 +24,171 @@ npm install -g https://github.com/0sw2ld0/cuybrowser/releases/download/v0.6.0/cu
 curl -fLo cuybrowser https://github.com/0sw2ld0/cuybrowser/releases/download/v0.6.0/cuybrowser-macos-arm64 && chmod +x cuybrowser
 ```
 
-Usa `cuybrowser-macos-x64`, `cuybrowser-linux-x64`, `cuybrowser-linux-arm64` o `cuybrowser-windows-x64.exe` según tu equipo, y ejecútalo como `./cuybrowser`. Las sumas de comprobación están en `SHA256SUMS`.
+Usa `cuybrowser-macos-x64`, `cuybrowser-linux-x64`, `cuybrowser-linux-arm64` o `cuybrowser-windows-x64.exe` según tu equipo, y ejecútalo como `./cuybrowser`. Las sumas de comprobación están en `SHA256SUMS`. En Windows, mira [Windows](#windows).
+
+## Windows
+
+Nadie lo ha usado todavía de verdad en Windows. La CI compila el ejecutable y pasa las pruebas en `windows-latest` en cada cambio, pero falta que lo pruebe una persona. Si lo pruebas, mira [qué probar](#qué-probar-en-windows) y cuéntanos qué pasó.
+
+Las órdenes son para PowerShell. Ejecútalas en la misma ventana, una tras otra.
+
+### Requisitos en Windows
+
+- Windows 10 u 11 de 64 bits (x64). No hay binario para ARM.
+- Un navegador del motor de Chrome. Microsoft Edge viene con Windows, y CuyBrowser lo usa si no tienes Google Chrome.
+- Para instalarlo con npm o desde el código, Node.js 20 o superior. Para clonar, también Git.
+
+### Opción 1: el ejecutable, sin Node.js
+
+Elige una carpeta de tu usuario para el ejecutable y créala:
+
+```powershell
+$dir = "$env:LOCALAPPDATA\Programs\cuybrowser"
+```
+
+```powershell
+New-Item -ItemType Directory -Force -Path $dir | Out-Null
+```
+
+Descárgalo; son unos 123 MB. La primera orden quita la barra de progreso, que en Windows PowerShell hace la descarga mucho más lenta:
+
+```powershell
+$ProgressPreference = 'SilentlyContinue'
+```
+
+```powershell
+Invoke-WebRequest -Uri https://github.com/0sw2ld0/cuybrowser/releases/download/v0.6.0/cuybrowser-windows-x64.exe -OutFile "$dir\cuybrowser.exe"
+```
+
+Comprueba que llegó entero. El resultado debe coincidir con la línea de `cuybrowser-windows-x64.exe` en [`SHA256SUMS`](https://github.com/0sw2ld0/cuybrowser/releases/download/v0.6.0/SHA256SUMS):
+
+```powershell
+(Get-FileHash "$dir\cuybrowser.exe" -Algorithm SHA256).Hash.ToLower()
+```
+
+Añade la carpeta a tu `PATH` de usuario. Solo hace falta una vez:
+
+```powershell
+[Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";$dir", "User")
+```
+
+Abre una terminal nueva para que lea el `PATH` actualizado, y comprueba que lo encuentra:
+
+```powershell
+cuybrowser --version
+```
+
+El ejecutable no está firmado. Si prefieres descargarlo con el navegador, guárdalo en esa carpeta con el nombre `cuybrowser.exe`. Windows puede bloquearlo con SmartScreen («Windows protegió tu PC»): pulsa **Más información** y después **Ejecutar de todas formas**, o desbloquéalo antes:
+
+```powershell
+Unblock-File "$env:LOCALAPPDATA\Programs\cuybrowser\cuybrowser.exe"
+```
+
+### Opción 2: con npm
+
+```powershell
+npm install -g https://github.com/0sw2ld0/cuybrowser/releases/download/v0.6.0/cuybrowser-0.6.0.tgz
+```
+
+npm deja la orden `cuybrowser` en su carpeta global, que ya está en el `PATH` si instalaste Node.js con su instalador.
+
+### Opción 3: desde el código
+
+```powershell
+git clone https://github.com/0sw2ld0/cuybrowser.git
+```
+
+```powershell
+cd cuybrowser
+```
+
+```powershell
+npm install
+```
+
+Comprueba que todo funciona en tu equipo. Las pruebas abren sin ventana el primer navegador compatible, normalmente Edge:
+
+```powershell
+npm test
+```
+
+Para tener la orden `cuybrowser` desde esta carpeta, instálala con npm:
+
+```powershell
+npm install -g .
+```
+
+O compila el ejecutable. El resultado es `release\cuybrowser.exe`:
+
+```powershell
+node scripts/build-binaries.mjs --current
+```
+
+```powershell
+.\release\cuybrowser.exe --version
+```
+
+En PowerShell es mejor llamar a `node` así que usar `npm run build:bin -- --current`. PowerShell trata `--` de forma especial y puede no pasarle `--current` al guion. Entonces compila los binarios de todas las plataformas.
+
+Para instalar el ejecutable compilado, crea la carpeta y añádela al `PATH` como en la opción 1, y cópialo allí:
+
+```powershell
+Copy-Item .\release\cuybrowser.exe "$env:LOCALAPPDATA\Programs\cuybrowser\cuybrowser.exe" -Force
+```
+
+### Actualizar en Windows
+
+Detén primero el proceso en segundo plano y cierra el navegador de CuyBrowser. Windows no deja reemplazar un `.exe` que está en uso:
+
+```powershell
+cuybrowser daemon stop
+```
+
+- **Con el ejecutable:** vuelve a descargarlo con la orden de la opción 1, cambiando la versión en la dirección.
+- **Con npm:** instala el `.tgz` de la versión nueva.
+- **Desde el código:** en la carpeta del clon, trae los cambios y vuelve a instalar. Después repite `npm install -g .`, o compila y copia el ejecutable otra vez.
+
+```powershell
+git pull
+```
+
+```powershell
+npm install
+```
+
+### Lo que cambia en Windows
+
+- **Tu carpeta de CuyBrowser.** `~/.cuybrowser` es `$env:USERPROFILE\.cuybrowser`, es decir, `C:\Users\TU_USUARIO\.cuybrowser`. Ahí están los perfiles, `policy.yaml` y la auditoría.
+- **Elegir navegador por ruta:**
+
+  ```powershell
+  cuybrowser start --browser "C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+  ```
+
+  Arc no se admite en Windows: se instala desde la tienda y no permite un perfil aparte.
+- **Las aprobaciones** salen en un diálogo de Windows. El botón por defecto es **No**.
+- **MCP.** `cuybrowser setup claude-code` (o `cursor`, o `codex`) registra la ruta completa del ejecutable, así que funciona igual que en macOS. Si configuras Claude Desktop a mano, su archivo es `%APPDATA%\Claude\claude_desktop_config.json`. En `command` pon la ruta completa del `.exe` con barras dobles, por ejemplo `"C:\\Users\\TU_USUARIO\\AppData\\Local\\Programs\\cuybrowser\\cuybrowser.exe"`. Algunos clientes no encuentran las órdenes que npm instala como `.cmd`; si lo instalaste con npm, usa `"command": "cmd"` y `"args": ["/c", "cuybrowser", "mcp"]`.
+- **Conectar con un Chrome ya abierto** (modo `attach`). Así se abre Chrome con el puerto de depuración:
+
+  ```powershell
+  & "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="$env:USERPROFILE\.chrome-attach"
+  ```
+
+### Qué probar en Windows
+
+1. `cuybrowser --version` y `cuybrowser browsers`: ¿encuentra Edge o Chrome?
+2. `cuybrowser start`, `cuybrowser navigate https://example.com`, `cuybrowser snapshot` y un `cuybrowser click` con una ref del snapshot.
+3. Algo que pida aprobación, como enviar un formulario con `cuybrowser type REF "hola" --submit`. ¿Sale el diálogo, y se respeta lo que contestas?
+4. Con la ventana abierta, `cuybrowser handoff "Prueba"`. ¿Sale el diálogo del relevo, y funcionan **Continuar** y **Cancelar**?
+5. `cuybrowser setup` con el agente que uses, y una petición desde el agente.
+6. `cuybrowser daemon stop`.
+
+Si algo falla, [abre un issue](https://github.com/0sw2ld0/cuybrowser/issues) e incluye:
+- tu versión de Windows;
+- cómo lo instalaste (opción 1, 2 o 3);
+- la orden que falló y lo que respondió.
+
+Antes de pegar nada, quita contraseñas o datos personales.
 
 ## Uso
 
@@ -132,6 +296,8 @@ Claude Code usa `~/.claude.json` o el directorio de `CLAUDE_CONFIG_DIR`. Cursor 
   }
 }
 ```
+
+En Windows, mira [lo que cambia](#lo-que-cambia-en-windows).
 
 ## API HTTP
 
@@ -331,6 +497,8 @@ Abre Chrome con el puerto de depuración. Desde la versión 136, Chrome ignora e
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --remote-debugging-port=9222 --user-data-dir="$HOME/.chrome-attach"
 ```
 
+En Windows, la orden está en [lo que cambia](#lo-que-cambia-en-windows).
+
 Conecta CuyBrowser. Sin `--cdp`, usa `http://127.0.0.1:9222`:
 
 ```bash
@@ -345,7 +513,7 @@ cuybrowser start --mode attach
 
 ## Compilar el binario
 
-Necesitas Git y Node.js 20 o superior. Para usar el binario, también un [navegador compatible](#navegador).
+Necesitas Git y Node.js 20 o superior. Para usar el binario, también un [navegador compatible](#navegador). Las órdenes de esta sección son para macOS y Linux; en Windows, sigue [la opción 3](#opción-3-desde-el-código).
 
 ```bash
 git clone https://github.com/0sw2ld0/cuybrowser.git && cd cuybrowser && npm install
