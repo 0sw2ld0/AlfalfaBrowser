@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Argument, Command, Option } from "commander";
 import type { ToolResponse } from "../core/errors.js";
@@ -12,6 +12,11 @@ import { DOC_FORMATS, generateDocs, type DocFormat } from "../docs/generate.js";
 import { callTool, daemonInfo, resolveApproval, stopDaemon } from "../ipc/client.js";
 import { tools } from "../tools/index.js";
 import { CLIENTS, setupMcp, type Client } from "./setup.js";
+
+const invocationNames = [process.argv[1] ?? "", process.execPath].map((path) => basename(path));
+const commandName = invocationNames.some((name) => /^alfalfabrowser(?:$|[.-])/.test(name))
+  ? "alfalfabrowser"
+  : "cuybrowser";
 
 interface ImageData {
   image: { mime_type: string; base64: string };
@@ -51,7 +56,7 @@ function print(tool: AnyTool, response: ToolResponse, options: Record<string, un
     console.error(`Error [${response.error.code}]: ${response.error.message}`);
     if (response.error.hint) console.error(`Pista: ${response.error.hint}`);
     if (response.error.confirmation) {
-      console.error(`Confirmación: cuybrowser confirm ${response.error.confirmation.confirmation_id}`);
+      console.error(`Confirmación: ${commandName} confirm ${response.error.confirmation.confirmation_id}`);
     }
   } else {
     if (hasImage(response.data)) console.log(response.data.image.base64);
@@ -110,8 +115,8 @@ function addTool(program: Command, tool: AnyTool): void {
   });
 }
 
-const program = new Command("cuybrowser")
-  .description("Control de un navegador del motor de Chrome para agentes de IA.")
+const program = new Command(commandName)
+  .description("AlfalfaBrowser controla un navegador del motor de Chrome para agentes de IA.")
   .version(VERSION);
 
 for (const tool of tools) addTool(program, tool);
@@ -127,7 +132,7 @@ program
 
 program
   .command("setup")
-  .description("Detecta clientes MCP o registra CuyBrowser para el cliente elegido.")
+  .description("Detecta clientes MCP o registra AlfalfaBrowser para el cliente elegido.")
   .addArgument(new Argument("[cliente]", "Cliente que quieres configurar.").choices([...CLIENTS]))
   .action((client: Client | undefined) => {
     process.exitCode = setupMcp(client, () => fileURLToPath(import.meta.url));

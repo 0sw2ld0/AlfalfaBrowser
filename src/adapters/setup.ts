@@ -79,7 +79,7 @@ function listClients(home: string, paths: Record<Client, string>): void {
   for (const client of CLIENTS) {
     console.log(`${NAMES[client]} (${client}): ${detected[client] ? "detectado" : "no detectado"}`);
   }
-  console.log("Para registrar CuyBrowser en un cliente, ejecuta cuybrowser setup <cliente>.");
+  console.log("Para registrar AlfalfaBrowser en un cliente, ejecuta cuybrowser setup <cliente>.");
 }
 
 function readConfig(path: string): ConfigFile | undefined {
@@ -214,7 +214,10 @@ export function setupMcp(client: Client | undefined, cliModule: () => string): n
   const launch = { command: process.execPath, args: isStandalone ? ["mcp"] : [cliModule(), "mcp"] };
   try {
     const added = client === "codex" ? registerCodex(paths.codex, home, launch) : registerJson(paths[client], launch, client);
-    console.log(`${NAMES[client]}: ${added ? "CuyBrowser añadido al registro MCP del usuario. Vuelve a abrir el cliente." : "CuyBrowser ya está registrado."}`);
+    const message = added
+      ? "AlfalfaBrowser añadido al registro MCP del usuario. Vuelve a abrir el cliente."
+      : "AlfalfaBrowser ya está registrado.";
+    console.log(`${NAMES[client]}: ${message}`);
     return 0;
   } catch (error) {
     console.error(`${NAMES[client]}: ${error instanceof Error ? error.message : "No se pudo actualizar la configuración MCP."}`);

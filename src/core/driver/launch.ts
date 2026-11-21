@@ -12,7 +12,7 @@ function firstLine(err: unknown): string {
 }
 
 /**
- * Abre un navegador del motor de Chrome con un perfil aislado de CuyBrowser; nunca usa el perfil personal.
+ * Abre un navegador del motor de Chrome con un perfil aislado de AlfalfaBrowser; nunca usa el perfil personal.
  * Sin navegador elegido, prueba los instalados en orden hasta que uno abre.
  */
 export class LaunchDriver implements BrowserDriver {
@@ -69,7 +69,7 @@ export class LaunchDriver implements BrowserDriver {
     throw new CuyError(
       "NO_BROWSER",
       only ? `No se pudo abrir ${failures[0]}` : `No se pudo abrir ningún navegador. ${failures.join("; ")}`,
-      "Comprueba que el navegador funciona y que el perfil no está en uso por otra ventana de CuyBrowser.",
+      "Comprueba que el navegador funciona y que el perfil no está en uso por otra ventana de AlfalfaBrowser.",
     );
   }
 

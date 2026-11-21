@@ -20,6 +20,7 @@ export default defineTool({
     try {
       const { x, y } = await element.clickablePoint();
       return await watchNavigation(tab, () => session.tabIds(), warnings, async () => {
+        tab.pointer?.show({ x, y }, true);
         if (double) await tab.page.mouse.dblclick(x, y, { button });
         else await tab.page.mouse.click(x, y, { button });
       });

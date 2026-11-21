@@ -1,13 +1,23 @@
-# CuyBrowser
+# AlfalfaBrowser
 
 Control de un navegador del motor de Chrome para agentes de IA, con un único núcleo y varias interfaces. La especificación completa está en [ESPEC-cuybrowser.md](ESPEC-cuybrowser.md).
 
-> **Estado: versión 0.6.0, de prueba. No está en npm.** Antes de enviar formularios, comprar, subir o descargar archivos, o ejecutar JavaScript, CuyBrowser pide tu aprobación en un diálogo del sistema. Esa detección es una heurística: un botón de una aplicación web que no pertenezca a un formulario ni parezca una compra se pulsa sin preguntar, así que supervisa al agente en cuentas importantes. El uso real solo se ha probado en macOS. En Linux y Windows se ejecutan las pruebas automáticas, que usan un aprobador simulado en lugar del diálogo del sistema.
+> **Estado: versión 0.6.0, de prueba. No está en npm.** Antes de enviar formularios, comprar, subir o descargar archivos, o ejecutar JavaScript, AlfalfaBrowser pide tu aprobación en un diálogo del sistema. Esa detección es una heurística: un botón de una aplicación web que no pertenezca a un formulario ni parezca una compra se pulsa sin preguntar, así que supervisa al agente en cuentas importantes. El uso real solo se ha probado en macOS. En Linux y Windows se ejecutan las pruebas automáticas, que usan un aprobador simulado en lugar del diálogo del sistema.
+
+AlfalfaBrowser es el nuevo nombre del proyecto CuyBrowser. Al instalar desde el código de este
+repositorio, npm registra `alfalfabrowser` y `cuybrowser` como dos entradas a la misma CLI. Las descargas publicadas
+conservan sus nombres `cuybrowser-*`, al igual que el perfil `~/.cuybrowser`, las variables
+`CUYBROWSER_*` y el registro MCP `cuybrowser`.
+
+Al hacer clic o pasar sobre un elemento en una ventana abierta por AlfalfaBrowser, aparece la hoja de
+[AlfalfaDesktop 0.1.1](https://github.com/0sw2ld0/AlfalfaDesktop/tree/v0.1.1). La punta indica
+el punto de interacción. Las capturas del navegador conservan la imagen limpia de la página.
+La hoja aparece solo en ventanas que abre el agente con su propio perfil.
 
 ## Requisitos
 
 - Node.js 20 o superior
-- Un navegador del motor de Chrome: Google Chrome, Microsoft Edge, Brave, Chromium o Arc. Si no tienes ninguno, CuyBrowser puede descargar su propio Chromium una sola vez, cuando tú se lo pidas ([más abajo](#navegador)). No hace falta ninguna extensión: lo abre con un perfil propio, separado del tuyo
+- Un navegador del motor de Chrome: Google Chrome, Microsoft Edge, Brave, Chromium o Arc. Si no tienes ninguno, AlfalfaBrowser puede descargar su propio Chromium una sola vez, cuando tú se lo pidas ([más abajo](#navegador)). No hace falta ninguna extensión: lo abre con un perfil propio, separado del tuyo
 - macOS. Linux necesita `zenity` o `kdialog` para aprobar acciones. En Linux y Windows solo se ejecutan las pruebas automáticas; el uso real no se ha probado. En Windows, sigue [estos pasos](#windows)
 
 ## Instalación
@@ -15,13 +25,13 @@ Control de un navegador del motor de Chrome para agentes de IA, con un único n�
 **Con Node.js 20 o superior:**
 
 ```bash
-npm install -g https://github.com/0sw2ld0/cuybrowser/releases/download/v0.6.0/cuybrowser-0.6.0.tgz
+npm install -g https://github.com/0sw2ld0/AlfalfaBrowser/releases/download/v0.6.0/cuybrowser-0.6.0.tgz
 ```
 
-**Sin Node.js**, con el binario de tu plataforma, publicado en [Releases](https://github.com/0sw2ld0/cuybrowser/releases). Por ejemplo, en un Mac con Apple Silicon:
+**Sin Node.js**, con el binario de tu plataforma, publicado en [Releases](https://github.com/0sw2ld0/AlfalfaBrowser/releases). Por ejemplo, en un Mac con Apple Silicon:
 
 ```bash
-curl -fLo cuybrowser https://github.com/0sw2ld0/cuybrowser/releases/download/v0.6.0/cuybrowser-macos-arm64 && chmod +x cuybrowser
+curl -fLo cuybrowser https://github.com/0sw2ld0/AlfalfaBrowser/releases/download/v0.6.0/cuybrowser-macos-arm64 && chmod +x cuybrowser
 ```
 
 Usa `cuybrowser-macos-x64`, `cuybrowser-linux-x64`, `cuybrowser-linux-arm64` o `cuybrowser-windows-x64.exe` según tu equipo, y ejecútalo como `./cuybrowser`. Las sumas de comprobación están en `SHA256SUMS`. En Windows, mira [Windows](#windows).
@@ -35,7 +45,7 @@ Las órdenes son para PowerShell. Ejecútalas en la misma ventana, una tras otra
 ### Requisitos en Windows
 
 - Windows 10 u 11 de 64 bits (x64). No hay binario para ARM.
-- Un navegador del motor de Chrome. Microsoft Edge viene con Windows, y CuyBrowser lo usa si no tienes Google Chrome.
+- Un navegador del motor de Chrome. Microsoft Edge viene con Windows, y AlfalfaBrowser lo usa si no tienes Google Chrome.
 - Para instalarlo con npm o desde el código, Node.js 20 o superior. Para clonar, también Git.
 
 ### Opción 1: el ejecutable, sin Node.js
@@ -57,10 +67,10 @@ $ProgressPreference = 'SilentlyContinue'
 ```
 
 ```powershell
-Invoke-WebRequest -Uri https://github.com/0sw2ld0/cuybrowser/releases/download/v0.6.0/cuybrowser-windows-x64.exe -OutFile "$dir\cuybrowser.exe"
+Invoke-WebRequest -Uri https://github.com/0sw2ld0/AlfalfaBrowser/releases/download/v0.6.0/cuybrowser-windows-x64.exe -OutFile "$dir\cuybrowser.exe"
 ```
 
-Comprueba que llegó entero. El resultado debe coincidir con la línea de `cuybrowser-windows-x64.exe` en [`SHA256SUMS`](https://github.com/0sw2ld0/cuybrowser/releases/download/v0.6.0/SHA256SUMS):
+Comprueba que llegó entero. El resultado debe coincidir con la línea de `cuybrowser-windows-x64.exe` en [`SHA256SUMS`](https://github.com/0sw2ld0/AlfalfaBrowser/releases/download/v0.6.0/SHA256SUMS):
 
 ```powershell
 (Get-FileHash "$dir\cuybrowser.exe" -Algorithm SHA256).Hash.ToLower()
@@ -87,7 +97,7 @@ Unblock-File "$env:LOCALAPPDATA\Programs\cuybrowser\cuybrowser.exe"
 ### Opción 2: con npm
 
 ```powershell
-npm install -g https://github.com/0sw2ld0/cuybrowser/releases/download/v0.6.0/cuybrowser-0.6.0.tgz
+npm install -g https://github.com/0sw2ld0/AlfalfaBrowser/releases/download/v0.6.0/cuybrowser-0.6.0.tgz
 ```
 
 npm deja la orden `cuybrowser` en su carpeta global, que ya está en el `PATH` si instalaste Node.js con su instalador.
@@ -95,11 +105,11 @@ npm deja la orden `cuybrowser` en su carpeta global, que ya está en el `PATH` s
 ### Opción 3: desde el código
 
 ```powershell
-git clone https://github.com/0sw2ld0/cuybrowser.git
+git clone https://github.com/0sw2ld0/AlfalfaBrowser.git
 ```
 
 ```powershell
-cd cuybrowser
+cd AlfalfaBrowser
 ```
 
 ```powershell
@@ -118,7 +128,7 @@ Para tener la orden `cuybrowser` desde esta carpeta, instálala con npm:
 npm install -g .
 ```
 
-O compila el ejecutable. El resultado es `release\cuybrowser.exe`:
+O compila el ejecutable. El resultado es `release\cuybrowser.exe` y su alias `release\alfalfabrowser.exe`:
 
 ```powershell
 node scripts/build-binaries.mjs --current
@@ -138,7 +148,7 @@ Copy-Item .\release\cuybrowser.exe "$env:LOCALAPPDATA\Programs\cuybrowser\cuybro
 
 ### Actualizar en Windows
 
-Detén primero el proceso en segundo plano y cierra el navegador de CuyBrowser. Windows no deja reemplazar un `.exe` que está en uso:
+Detén primero el proceso en segundo plano y cierra el navegador de AlfalfaBrowser. Windows no deja reemplazar un `.exe` que está en uso:
 
 ```powershell
 cuybrowser daemon stop
@@ -158,7 +168,7 @@ npm install
 
 ### Lo que cambia en Windows
 
-- **Tu carpeta de CuyBrowser.** `~/.cuybrowser` es `$env:USERPROFILE\.cuybrowser`, es decir, `C:\Users\TU_USUARIO\.cuybrowser`. Ahí están los perfiles, `policy.yaml` y la auditoría.
+- **Tu carpeta de AlfalfaBrowser.** `~/.cuybrowser` es `$env:USERPROFILE\.cuybrowser`, es decir, `C:\Users\TU_USUARIO\.cuybrowser`. Ahí están los perfiles, `policy.yaml` y la auditoría.
 - **Elegir navegador por ruta:**
 
   ```powershell
@@ -183,7 +193,7 @@ npm install
 5. `cuybrowser setup` con el agente que uses, y una petición desde el agente.
 6. `cuybrowser daemon stop`.
 
-Si algo falla, [abre un issue](https://github.com/0sw2ld0/cuybrowser/issues) e incluye:
+Si algo falla, [abre un issue](https://github.com/0sw2ld0/AlfalfaBrowser/issues) e incluye:
 - tu versión de Windows;
 - cómo lo instalaste (opción 1, 2 o 3);
 - la orden que falló y lo que respondió.
@@ -262,7 +272,7 @@ cuybrowser start --browser "/Applications/Vivaldi.app"
 
 También puedes fijarlo con la variable `CUYBROWSER_BROWSER`, por ejemplo en la configuración MCP de tu agente. `--browser` tiene preferencia.
 
-**Sin ningún navegador compatible**, `start` responde `NO_BROWSER` y explica qué hacer. CuyBrowser nunca descarga nada por su cuenta. Para descargar una sola vez el Chromium de Playwright, unos 190 MB de descarga y 370 MB en disco, ejecuta:
+**Sin ningún navegador compatible**, `start` responde `NO_BROWSER` y explica qué hacer. AlfalfaBrowser nunca descarga nada por su cuenta. Para descargar una sola vez el Chromium de Playwright, unos 190 MB de descarga y 370 MB en disco, ejecuta:
 
 ```bash
 cuybrowser install-browser
@@ -274,7 +284,7 @@ Te pide confirmación; con `--yes` no la pide. Se guarda en `~/.cuybrowser/brows
 
 Las herramientas se publican con el prefijo `browser_`, que se puede cambiar con `--prefix`. Instálalo antes de forma global o usa la ruta absoluta del binario.
 
-Ejecuta `cuybrowser setup` para ver qué clientes detecta. Elige uno con su identificador para añadir CuyBrowser a su registro MCP de usuario:
+Ejecuta `cuybrowser setup` para ver qué clientes detecta. Elige uno con su identificador para añadir AlfalfaBrowser a su registro MCP de usuario:
 
 ```bash
 cuybrowser setup claude-code
@@ -343,7 +353,7 @@ Para compartirla con quienes usen un repositorio, créala dentro de él:
 mkdir -p .github/skills/cuybrowser && cuybrowser docs --format skill-md > .github/skills/cuybrowser/SKILL.md
 ```
 
-Copilot puede pedirte permiso para cada comando. Las acciones delicadas siguen necesitando tu aprobación en el diálogo de CuyBrowser. Comprueba también que Copilot espera a que respondas: `confirm` no termina hasta entonces.
+Copilot puede pedirte permiso para cada comando. Las acciones delicadas siguen necesitando tu aprobación en el diálogo de AlfalfaBrowser. Comprueba también que Copilot espera a que respondas: `confirm` no termina hasta entonces.
 
 ### Copilot en VS Code
 
@@ -363,7 +373,7 @@ Abre el chat de Copilot en modo agente, escribe `/`, elige `cuybrowser` y añade
 
 Copilot ejecutará comandos como `cuybrowser navigate` en la terminal, y VS Code puede pedirte permiso para cada uno. Revisa que sean comandos de `cuybrowser` y no las herramientas de navegador integradas de VS Code.
 
-Si se abre el navegador integrado de VS Code en lugar del de CuyBrowser, abre primero un chat nuevo, porque un chat ya abierto puede no haber cargado la skill. Solo si sigue pasando, ejecuta **Preferences: Open User Settings (JSON)** en la paleta de comandos y añade este ajuste. Afecta a todos tus proyectos: para recuperar ese navegador en el chat, bórralo:
+Si se abre el navegador integrado de VS Code en lugar del de AlfalfaBrowser, abre primero un chat nuevo, porque un chat ya abierto puede no haber cargado la skill. Solo si sigue pasando, ejecuta **Preferences: Open User Settings (JSON)** en la paleta de comandos y añade este ajuste. Afecta a todos tus proyectos: para recuperar ese navegador en el chat, bórralo:
 
 ```json
 "workbench.browser.enableChatTools": false
@@ -484,7 +494,7 @@ cuybrowser start --profile trabajo
 
 ## Conectar con un Chrome ya abierto
 
-Con el modo `attach`, CuyBrowser controla un Chrome que abriste tú, en lugar de abrir el suyo. El agente verá todas las pestañas y sesiones de ese Chrome, así que está deshabilitado por defecto. Para habilitarlo, añade esto a `~/.cuybrowser/policy.yaml`:
+Con el modo `attach`, AlfalfaBrowser controla un Chrome que abriste tú, en lugar de abrir el suyo. El agente verá todas las pestañas y sesiones de ese Chrome, así que está deshabilitado por defecto. Para habilitarlo, añade esto a `~/.cuybrowser/policy.yaml`:
 
 ```yaml
 attach:
@@ -499,7 +509,7 @@ Abre Chrome con el puerto de depuración. Desde la versión 136, Chrome ignora e
 
 En Windows, la orden está en [lo que cambia](#lo-que-cambia-en-windows).
 
-Conecta CuyBrowser. Sin `--cdp`, usa `http://127.0.0.1:9222`:
+Conecta AlfalfaBrowser. Sin `--cdp`, usa `http://127.0.0.1:9222`:
 
 ```bash
 cuybrowser start --mode attach
@@ -513,10 +523,12 @@ cuybrowser start --mode attach
 
 ## Compilar el binario
 
+La compilación local con `--current` genera `alfalfabrowser` y `cuybrowser` (con `.exe` en Windows).
+
 Necesitas Git y Node.js 20 o superior. Para usar el binario, también un [navegador compatible](#navegador). Las órdenes de esta sección son para macOS y Linux; en Windows, sigue [la opción 3](#opción-3-desde-el-código).
 
 ```bash
-git clone https://github.com/0sw2ld0/cuybrowser.git && cd cuybrowser && npm install
+git clone https://github.com/0sw2ld0/AlfalfaBrowser.git && cd AlfalfaBrowser && npm install
 ```
 
 Compila solo para tu equipo. El resultado es `release/cuybrowser`:
@@ -596,7 +608,7 @@ npm run build:bin
 También puedes compilar con Yarn 1 en lugar de npm. Se ha probado con la versión 1.22. Necesitas npm igualmente, porque los scripts lo usan por dentro, y Yarn ignora `package-lock.json`, así que puede instalar versiones distintas de las dependencias:
 
 ```bash
-git clone https://github.com/0sw2ld0/cuybrowser.git && cd cuybrowser && yarn install
+git clone https://github.com/0sw2ld0/AlfalfaBrowser.git && cd AlfalfaBrowser && yarn install
 ```
 
 ```bash
@@ -607,9 +619,15 @@ Cada binario ocupa entre 97 y 123 MB, porque incluye su propio motor de ejecuci�
 
 ## Desarrollo
 
+Para cambios en TypeScript, aplica las convenciones de nombres descriptivos, flujo de control
+y líneas de hasta 120 caracteres que son transferibles de la
+[guía de RedMadRobot](https://github.com/RedMadRobot/RMR-swift-style-guide).
+Usa inglés para los identificadores nuevos.
+
+
 ### Relevo a la persona
 
-Con una ventana de CuyBrowser abierta, `cuybrowser handoff "Inicia sesión en esta página"` cede la pestaña activa a la persona. Un diálogo del sistema muestra el sitio y el motivo: haz tu parte en el navegador y pulsa **Continuar**, o **Cancelar**. El relevo termina como máximo a los dos minutos y devuelve la URL y el título actuales como datos de la página.
+Con una ventana de AlfalfaBrowser abierta, `cuybrowser handoff "Inicia sesión en esta página"` cede la pestaña activa a la persona. Un diálogo del sistema muestra el sitio y el motivo: haz tu parte en el navegador y pulsa **Continuar**, o **Cancelar**. El relevo termina como máximo a los dos minutos y devuelve la URL y el título actuales como datos de la página.
 
 Durante la espera, las acciones del agente se rechazan con `HANDOFF_ACTIVE`; `status` permite consultar el estado y `stop` cancela el relevo. Funciona con el diálogo nativo aunque la política use otro canal de aprobación. No funciona con `headless`. Para contraseñas, 2FA y captchas, usa este relevo: el agente no los completa ni resuelve por su cuenta.
 

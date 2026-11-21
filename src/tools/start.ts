@@ -8,7 +8,9 @@ import { policyPath } from "../core/security/policy.js";
 export default defineTool({
   name: "start",
   description:
-    "Abre un navegador con un perfil aislado de CuyBrowser: Google Chrome o, si no está, el primero que haya de Microsoft Edge, Brave, Chromium, Arc y el Chromium que descarga install-browser. Con mode attach, se conecta a un Chrome ya abierto con --remote-debugging-port si la política lo permite.",
+    "Abre un navegador con un perfil aislado de AlfalfaBrowser: Google Chrome o, si no está, el primero que haya " +
+    "de Microsoft Edge, Brave, Chromium, Arc y el Chromium que descarga install-browser. Con mode attach, " +
+    "se conecta a un Chrome ya abierto con --remote-debugging-port si la política lo permite.",
   params: z.strictObject({
     mode: z
       .enum(["launch", "attach"])

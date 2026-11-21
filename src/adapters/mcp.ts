@@ -59,7 +59,7 @@ export async function runMcp(tools: readonly AnyTool[], prefix: string): Promise
     if (info.mode !== "elicitation" || !info.description || info.decided) return;
     if (!server.getClientCapabilities()?.elicitation) return;
     const answer = await server.elicitInput({
-      message: `CuyBrowser pide permiso para esta acción:\n\n${info.description}`,
+      message: `AlfalfaBrowser pide permiso para esta acción:\n\n${info.description}`,
       requestedSchema: { type: "object", properties: {} },
     });
     await resolveApproval(confirmationId, answer.action === "accept", "elicitation");

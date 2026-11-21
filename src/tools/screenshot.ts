@@ -29,6 +29,7 @@ export default defineTool({
     const buffer = await tab.page.screenshot({
       type: "png",
       fullPage: full_page,
+      ...(tab.pointer ? { style: tab.pointer.screenshotStyle } : {}),
       ...(clip ? { clip } : {}),
     });
     return { image: { mime_type: "image/png", base64: buffer.toString("base64") } };

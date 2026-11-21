@@ -42,7 +42,9 @@ export function dialogCommands(
           "-e",
           "on run argv",
           "-e",
-          `set r to display dialog (item 1 of argv) with title "CuyBrowser" buttons {"${reject}", "${approve}"} default button "${reject}" with icon caution giving up after (item 2 of argv as integer)`,
+          `set r to display dialog (item 1 of argv) with title "AlfalfaBrowser" ` +
+            `buttons {"${reject}", "${approve}"} default button "${reject}" with icon caution ` +
+            "giving up after (item 2 of argv as integer)",
           "-e",
           'return (button returned of r) & "|" & (gave up of r)',
           "-e",
@@ -66,8 +68,35 @@ export function dialogCommands(
           "-NonInteractive",
           "-Command",
           kind === "handoff"
-            ? "Add-Type -AssemblyName PresentationFramework; $w = New-Object System.Windows.Window; $w.Title = 'CuyBrowser'; $w.SizeToContent = 'WidthAndHeight'; $w.WindowStartupLocation = 'CenterScreen'; $p = New-Object System.Windows.Controls.StackPanel; $p.Margin = 20; $t = New-Object System.Windows.Controls.TextBlock; $t.Text = $env:CUYBROWSER_DIALOG_TEXT; $t.TextWrapping = 'Wrap'; $t.Width = 480; $p.Children.Add($t) | Out-Null; $no = New-Object System.Windows.Controls.Button; $no.Content = 'Cancelar'; $no.IsCancel = $true; $no.IsDefault = $true; $no.Add_Click({ $w.DialogResult = $false }); $p.Children.Add($no) | Out-Null; $yes = New-Object System.Windows.Controls.Button; $yes.Content = 'Continuar'; $yes.Add_Click({ $w.DialogResult = $true }); $p.Children.Add($yes) | Out-Null; $w.Content = $p; if ($w.ShowDialog()) { 'Yes' } else { 'No' }"
-            : "Add-Type -AssemblyName PresentationFramework; [System.Windows.MessageBox]::Show($env:CUYBROWSER_DIALOG_TEXT, 'CuyBrowser', 'YesNo', 'Warning', 'No')",
+            ? [
+              "Add-Type -AssemblyName PresentationFramework",
+              "$w = New-Object System.Windows.Window",
+              "$w.Title = 'AlfalfaBrowser'",
+              "$w.SizeToContent = 'WidthAndHeight'",
+              "$w.WindowStartupLocation = 'CenterScreen'",
+              "$p = New-Object System.Windows.Controls.StackPanel",
+              "$p.Margin = 20",
+              "$t = New-Object System.Windows.Controls.TextBlock",
+              "$t.Text = $env:CUYBROWSER_DIALOG_TEXT",
+              "$t.TextWrapping = 'Wrap'",
+              "$t.Width = 480",
+              "$p.Children.Add($t) | Out-Null",
+              "$no = New-Object System.Windows.Controls.Button",
+              "$no.Content = 'Cancelar'",
+              "$no.IsCancel = $true",
+              "$no.IsDefault = $true",
+              "$no.Add_Click({ $w.DialogResult = $false })",
+              "$p.Children.Add($no) | Out-Null",
+              "$yes = New-Object System.Windows.Controls.Button",
+              "$yes.Content = 'Continuar'",
+              "$yes.Add_Click({ $w.DialogResult = $true })",
+              "$p.Children.Add($yes) | Out-Null",
+              "$w.Content = $p",
+              "if ($w.ShowDialog()) { 'Yes' } else { 'No' }",
+            ].join("; ")
+            : "Add-Type -AssemblyName PresentationFramework; " +
+              "[System.Windows.MessageBox]::Show(" +
+              "$env:CUYBROWSER_DIALOG_TEXT, 'AlfalfaBrowser', 'YesNo', 'Warning', 'No')",
         ],
         env: { CUYBROWSER_DIALOG_TEXT: text },
         interpret: (code, stdout) => {
@@ -84,7 +113,7 @@ export function dialogCommands(
       args: [
         "--question",
         "--no-markup",
-        "--title=CuyBrowser",
+        "--title=AlfalfaBrowser",
         `--text=${text}`,
         `--ok-label=${approve}`,
         `--cancel-label=${reject}`,
@@ -98,7 +127,7 @@ export function dialogCommands(
     },
     {
       command: "kdialog",
-      args: ["--title", "CuyBrowser", "--yes-label", approve, "--no-label", reject, "--yesno", text],
+      args: ["--title", "AlfalfaBrowser", "--yes-label", approve, "--no-label", reject, "--yesno", text],
       interpret: (code) => {
         if (code === 0) return "approved";
         return code === 1 ? "denied" : null;

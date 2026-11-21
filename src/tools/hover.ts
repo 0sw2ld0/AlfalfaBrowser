@@ -13,6 +13,7 @@ export default defineTool({
     const element = await resolveElement(tab, ref);
     try {
       const { x, y } = await element.clickablePoint();
+      tab.pointer?.show({ x, y }, false);
       await tab.page.mouse.move(x, y);
       return { ref };
     } finally {

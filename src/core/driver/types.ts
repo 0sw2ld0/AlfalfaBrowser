@@ -16,7 +16,7 @@ export interface StartOptions {
 /** Punto único de acceso al navegador; extension añadirá otra implementación. */
 export interface BrowserDriver {
   readonly mode: BrowserMode;
-  /** Perfil aislado de CuyBrowser; null si el navegador no es suyo. */
+  /** Perfil aislado de AlfalfaBrowser; null si el navegador no es suyo. */
   readonly profile: string | null;
   /** URL de depuración a la que se conectó, solo en attach. */
   readonly endpoint: string | null;

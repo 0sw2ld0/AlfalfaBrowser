@@ -5,6 +5,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
+    "alfalfabrowser": "dist/adapters/cli.js",
     "cuybrowser": "dist/adapters/cli.js"
   },
   "files": [
@@ -46,10 +47,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/0sw2ld0/cuybrowser.git"
+    "url": "git+https://github.com/0sw2ld0/AlfalfaBrowser.git"
   },
-  "homepage": "https://github.com/0sw2ld0/cuybrowser#readme",
+  "homepage": "https://github.com/0sw2ld0/AlfalfaBrowser#readme",
   "bugs": {
-    "url": "https://github.com/0sw2ld0/cuybrowser/issues"
+    "url": "https://github.com/0sw2ld0/AlfalfaBrowser/issues"
   }
 }
