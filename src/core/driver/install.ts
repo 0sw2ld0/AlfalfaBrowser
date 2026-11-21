@@ -68,6 +68,6 @@ export async function installBrowser(options: { yes: boolean }): Promise<number>
     return 1;
   }
   console.log(`Listo: ${PLAYWRIGHT_CHROMIUM_NAME} en ${path}`);
-  console.log("CuyBrowser lo usará cuando no encuentre otro navegador, o con --browser chromium.");
+  console.log("AlfalfaBrowser lo usará cuando no encuentre otro navegador, o con --browser chromium.");
   return 0;
 }

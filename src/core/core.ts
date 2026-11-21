@@ -371,7 +371,7 @@ export class Core {
       throw new CuyError(
         "APPROVAL_UNAVAILABLE",
         `No hay forma de pedir la aprobación con el canal "${policy.approval}", así que la acción no se ejecutó.`,
-        "Configura otro canal en la política o usa CuyBrowser en una sesión con interfaz gráfica.",
+        "Configura otro canal en la política o usa AlfalfaBrowser en una sesión con interfaz gráfica.",
       );
     }
     if (decision === "denied") {

@@ -2,7 +2,7 @@
 // Compila un binario por plataforma en release/. Uso: node scripts/build-binaries.mjs [--current]
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const TARGETS = [
@@ -20,7 +20,8 @@ const bun = join("node_modules", "bun", "bin", "bun.exe");
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 
-const targets = onlyCurrent ? [[null, `cuybrowser${process.platform === "win32" ? ".exe" : ""}`]] : TARGETS;
+const extension = process.platform === "win32" ? ".exe" : "";
+const targets = onlyCurrent ? [[null, `cuybrowser${extension}`]] : TARGETS;
 const checksums = [];
 for (const [target, name] of targets) {
   const path = join(out, name);
@@ -30,7 +31,13 @@ for (const [target, name] of targets) {
     ["scripts/compile-binary.mjs", path, ...(target ? [target] : [])],
     { stdio: ["ignore", "ignore", "inherit"] },
   );
-  checksums.push(`${createHash("sha256").update(readFileSync(path)).digest("hex")}  ${name}`);
+  const digest = createHash("sha256").update(readFileSync(path)).digest("hex");
+  checksums.push(`${digest}  ${name}`);
+  if (onlyCurrent) {
+    const alias = `alfalfabrowser${extension}`;
+    copyFileSync(path, join(out, alias));
+    checksums.push(`${digest}  ${alias}`);
+  }
 }
 writeFileSync(join(out, "SHA256SUMS"), `${checksums.join("\n")}\n`);
 console.log(`Listo: ${checksums.length} binarios en ${out}/`);

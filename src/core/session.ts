@@ -1,4 +1,5 @@
 import type { BrowserContext, CDPSession, Dialog, Download, Frame, Page, Route } from "playwright-core";
+import { BrowserPointer } from "./browser-pointer.js";
 import { AttachDriver, DEFAULT_CDP_URL } from "./driver/attach.js";
 import { LaunchDriver } from "./driver/launch.js";
 import type { BrowserDriver, StartOptions } from "./driver/types.js";
@@ -13,6 +14,7 @@ import type { FlatLine } from "./snapshot/render.js";
 export class Tab {
   originReady: Promise<void> = Promise.resolve();
   readonly refs = new RefTable();
+  readonly pointer?: BrowserPointer;
   dialog: Dialog | null = null;
   blockedUrl: string | null = null;
   /** Termina cuando la pestaña deja de cancelar una redirección prohibida. */
@@ -29,7 +31,10 @@ export class Tab {
   constructor(
     readonly id: string,
     readonly page: Page,
-  ) {}
+    showsPointer = false,
+  ) {
+    if (showsPointer) this.pointer = new BrowserPointer(page);
+  }
 
   cdp(): Promise<CDPSession> {
     this.session ??= this.openSession();
@@ -293,7 +298,8 @@ export class Session {
   private register(page: Page): Tab {
     const existing = [...this.tabs.values()].find((tab) => tab.page === page);
     if (existing) return existing;
-    const tab = new Tab(`t${++this.tabCounter}`, page);
+    const showsPointer = this.driver?.mode === "launch" && !this.headless;
+    const tab = new Tab(`t${++this.tabCounter}`, page, showsPointer);
     this.tabs.set(tab.id, tab);
     if (this.originGuard) {
       tab.originReady = this.originGuard.prepare(page);

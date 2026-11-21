@@ -34,7 +34,12 @@ export interface RecentAuditEntry {
 
 function hash(value: string | Buffer): string { return createHash("sha256").update(value).digest("hex"); }
 function expired(): never { throw new CuyError("AUDIT_CURSOR_EXPIRED", "El cursor ya no corresponde al registro, daemon o perfil actual. Consulta de nuevo sin cursor."); }
-function unavailable(): never { throw new CuyError("AUDIT_UNAVAILABLE", "La auditoría no está disponible como archivo regular privado dentro del hogar de CuyBrowser."); }
+function unavailable(): never {
+  throw new CuyError(
+    "AUDIT_UNAVAILABLE",
+    "La auditoría no está disponible como archivo regular privado dentro del hogar de AlfalfaBrowser.",
+  );
+}
 function sameScope(a: AuditScope, b: AuditScope): boolean {
   return a.daemon_session_id === b.daemon_session_id && a.profile === b.profile;
 }

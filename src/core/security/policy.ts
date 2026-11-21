@@ -47,7 +47,7 @@ const PolicySchema = z.strictObject({
 
 export type Policy = z.infer<typeof PolicySchema>;
 
-const TEMPLATE = `# Política de CuyBrowser. Los cambios se aplican en la siguiente acción.
+const TEMPLATE = `# Política de AlfalfaBrowser. Los cambios se aplican en la siguiente acción.
 domains:
   allow: []            # vacío = todos permitidos excepto los de deny
   deny: []             # "*.banco.com" incluye banco.com y sus subdominios

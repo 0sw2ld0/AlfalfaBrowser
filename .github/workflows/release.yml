@@ -49,4 +49,4 @@ jobs:
       - name: Crear la release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" release/* --draft --title "CuyBrowser ${GITHUB_REF_NAME#v}" --generate-notes
+        run: gh release create "$GITHUB_REF_NAME" release/* --draft --title "AlfalfaBrowser ${GITHUB_REF_NAME#v}" --generate-notes

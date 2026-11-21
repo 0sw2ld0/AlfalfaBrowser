@@ -1,6 +1,6 @@
 <!-- Generado con: cuybrowser docs --format agents-md -->
 
-# CuyBrowser
+# AlfalfaBrowser
 
 Herramienta para controlar un navegador del motor de Chrome desde la terminal.
 
@@ -16,7 +16,7 @@ Ejecuta `cuybrowser` en la terminal. No uses las herramientas de navegador integ
 cuybrowser start
 ```
 
-`start` abre Google Chrome. Si no está instalado, usa el primero que encuentre de Microsoft Edge, Brave, Chromium y Arc, y por último el Chromium de Playwright si la persona lo descargó con `cuybrowser install-browser`. Siempre con un perfil aislado de CuyBrowser, nunca el personal. La respuesta dice en `browser` cuál se abrió.
+`start` abre Google Chrome. Si no está instalado, usa el primero que encuentre de Microsoft Edge, Brave, Chromium y Arc, y por último el Chromium de Playwright si la persona lo descargó con `cuybrowser install-browser`. Siempre con un perfil aislado de AlfalfaBrowser, nunca el personal. La respuesta dice en `browser` cuál se abrió.
 
 Para fijar uno, usa `browser` en `start` (`chrome`, `msedge`, `brave`, `chromium`, `arc` o la ruta del ejecutable) o la variable `CUYBROWSER_BROWSER`. Hazlo solo si la persona lo pide.
 
@@ -51,7 +51,7 @@ Con `REF_STALE` o `REF_NOT_FOUND`, toma un snapshot nuevo. Con `NOT_INTERACTABLE
 
 ### start
 
-Abre un navegador con un perfil aislado de CuyBrowser: Google Chrome o, si no está, el primero que haya de Microsoft Edge, Brave, Chromium, Arc y el Chromium que descarga install-browser. Con mode attach, se conecta a un Chrome ya abierto con --remote-debugging-port si la política lo permite.
+Abre un navegador con un perfil aislado de AlfalfaBrowser: Google Chrome o, si no está, el primero que haya de Microsoft Edge, Brave, Chromium, Arc y el Chromium que descarga install-browser. Con mode attach, se conecta a un Chrome ya abierto con --remote-debugging-port si la política lo permite.
 
 ```bash
 cuybrowser start [opciones]

@@ -30,7 +30,7 @@ const PROTECTED = [
   ".git-credentials",
   "Library/Keychains",
   "Library/Cookies",
-  // Perfiles personales de los navegadores que CuyBrowser puede abrir: guardan cookies y contraseñas.
+  // Perfiles personales de los navegadores que AlfalfaBrowser puede abrir: guardan cookies y contraseñas.
   "Library/Application Support/Google/Chrome",
   "Library/Application Support/Microsoft Edge",
   "Library/Application Support/BraveSoftware",

@@ -1,4 +1,4 @@
-# Especificación de construcción: CuyBrowser
+# Especificación de construcción: AlfalfaBrowser
 
 > Herramienta para que agentes de IA controlen Chrome u otro navegador de su mismo motor, utilizable **vía MCP** y **sin MCP** (CLI y HTTP local), con un único núcleo compartido.
 
@@ -229,7 +229,7 @@ audit:
 
    | `approval` | Cómo aprueba el humano | Garantía |
    |---|---|---|
-   | `native-dialog` (por defecto) | Diálogo del sistema operativo abierto por el daemon, con una descripción que genera el propio daemon | Alta: el agente no puede responderlo por las interfaces de CuyBrowser |
+   | `native-dialog` (por defecto) | Diálogo del sistema operativo abierto por el daemon, con una descripción que genera el propio daemon | Alta: el agente no puede responderlo por las interfaces de AlfalfaBrowser |
    | `elicitation` (opcional, solo MCP) | Formulario de *elicitation* del cliente MCP | Media: depende del cliente, y un orquestador podría responder sin humano |
    | `cli` (opcional) | El usuario ejecuta `cuybrowser approve <id>` o `cuybrowser deny <id>` | Baja: un agente con terminal podría ejecutarlo; solo para entornos sin interfaz gráfica de confianza |
 
@@ -376,6 +376,6 @@ cuybrowser/
 - Firefox y Safari.
 
 ## 12. Decisiones tomadas
-- Nombre del proyecto: CuyBrowser; paquete y binario: `cuybrowser`.
+- Nombre del proyecto: AlfalfaBrowser; paquete y binario: `cuybrowser`.
 - Licencia: MIT.
 - Puerto HTTP por defecto: 47777.
