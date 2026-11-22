@@ -33,6 +33,11 @@ const USABLE_DURING_DIALOG = new Set([
   "handle_dialog",
 ]);
 
+// These actions choose another tab, close the browser, or wait for human input.
+const WITHOUT_TAB_ACTIVITY = new Set([
+  "start", "stop", "tab_new", "tab_select", "tab_close", "confirm", "handle_dialog",
+]);
+
 interface PendingDownload {
   confirmation_id: string;
   filename: string;
@@ -272,10 +277,17 @@ export class Core {
         resolve({ dialog: { kind: dialog.type(), message: quotePageText(dialog.message()) } });
       });
     });
-    const running = tool.handler(ctx, params);
-    running.catch(() => {});
+    const activity = !WITHOUT_TAB_ACTIVITY.has(tool.name) && (tool.risk !== "read" || tool.name === "wait_for")
+      ? tab.activity : undefined;
+    activity?.start();
     try {
-      return await Promise.race([running, interrupted]);
+      const result = await Promise.race([tool.handler(ctx, params), interrupted]);
+      if (tab.dialog) activity?.hide();
+      else activity?.finish();
+      return result;
+    } catch (error) {
+      activity?.hide();
+      throw error;
     } finally {
       stopListening();
     }

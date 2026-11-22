@@ -11,7 +11,9 @@ El comando y los ejecutables se publican como `alfalfabrowser`. El perfil
 Al hacer clic o pasar sobre un elemento en una ventana abierta por AlfalfaBrowser, aparece la hoja de
 [AlfalfaDesktop 0.1.1](https://github.com/0sw2ld0/AlfalfaDesktop/tree/v0.1.1). La punta indica
 el punto de interacción. Las capturas del navegador conservan la imagen limpia de la página.
-La hoja aparece solo en ventanas que abre el agente con su propio perfil.
+En esas mismas ventanas, un borde verde y el aviso «AlfalfaBrowser en uso» señalan la pestaña
+mientras el agente navega, interactúa con la página o espera un cambio. El aviso desaparece al
+terminar o al ceder el control. El borde, el aviso y la hoja quedan fuera de las capturas de la herramienta.
 
 ## Requisitos
 

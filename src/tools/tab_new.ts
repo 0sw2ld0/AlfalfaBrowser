@@ -13,7 +13,16 @@ export default defineTool({
   handler: async ({ session, policy, warnings }, { url }) => {
     if (url !== undefined) validateUrl(url, policy);
     const tab = await session.newTab();
-    if (url !== undefined) await navigateTab(tab, url, "load", policy, warnings);
+    if (url !== undefined) {
+      tab.activity?.start();
+      try {
+        await navigateTab(tab, url, "load", policy, warnings);
+        tab.activity?.finish();
+      } catch (error) {
+        tab.activity?.hide();
+        throw error;
+      }
+    }
     return { id: tab.id };
   },
 });

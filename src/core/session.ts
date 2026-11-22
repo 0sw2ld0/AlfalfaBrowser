@@ -1,4 +1,5 @@
 import type { BrowserContext, CDPSession, Dialog, Download, Frame, Page, Route } from "playwright-core";
+import { BrowserActivity } from "./browser-activity.js";
 import { BrowserPointer } from "./browser-pointer.js";
 import { AttachDriver, DEFAULT_CDP_URL } from "./driver/attach.js";
 import { LaunchDriver } from "./driver/launch.js";
@@ -18,6 +19,7 @@ export class Tab {
   originReady: Promise<void> = Promise.resolve();
   readonly refs = new RefTable();
   readonly pointer?: BrowserPointer;
+  readonly activity?: BrowserActivity;
   dialog: Dialog | null = null;
   blockedUrl: string | null = null;
   /** Termina cuando la pestaña deja de cancelar una redirección prohibida. */
@@ -34,9 +36,12 @@ export class Tab {
   constructor(
     readonly id: string,
     readonly page: Page,
-    showsPointer = false,
+    showsIndicators = false,
   ) {
-    if (showsPointer) this.pointer = new BrowserPointer(page);
+    if (showsIndicators) {
+      this.pointer = new BrowserPointer(page);
+      this.activity = new BrowserActivity(page);
+    }
     page.on("framenavigated", (frame) => {
       if (frame !== page.mainFrame()) return;
       this.documentGeneration++;
@@ -181,6 +186,7 @@ export class Session {
       throw new CuyError("INVALID_PARAMS", "El relevo necesita una ventana: inicia el navegador sin headless.");
     }
     if (this.handoffAbort) throw new CuyError("HANDOFF_ACTIVE", "Ya hay un relevo esperando a la persona.");
+    this.currentTab()?.activity?.hide();
     return (this.handoffAbort = new AbortController());
   }
 
@@ -309,8 +315,8 @@ export class Session {
   private register(page: Page): Tab {
     const existing = [...this.tabs.values()].find((tab) => tab.page === page);
     if (existing) return existing;
-    const showsPointer = this.driver?.mode === "launch" && !this.headless;
-    const tab = new Tab(`t${++this.tabCounter}`, page, showsPointer);
+    const showsIndicators = this.driver?.mode === "launch" && !this.headless;
+    const tab = new Tab(`t${++this.tabCounter}`, page, showsIndicators);
     this.tabs.set(tab.id, tab);
     if (this.originGuard) {
       tab.originReady = this.originGuard.prepare(page);
@@ -450,6 +456,7 @@ export class Session {
   }
 
   async newTab(): Promise<Tab> {
+    this.currentTab()?.activity?.hide();
     const page = await this.requireContext().newPage();
     if (this.viewport) await page.setViewportSize(this.viewport);
     const tab = this.register(page);
@@ -461,7 +468,9 @@ export class Session {
   async selectTab(id: string): Promise<void> {
     const tab = this.tabById(id);
     if (!tab.dialog) await tab.page.bringToFront();
+    this.currentTab()?.activity?.hide();
     this.activeId = tab.id;
+    if (!tab.dialog) tab.activity?.finish();
   }
 
   async closeTab(id?: string): Promise<void> {

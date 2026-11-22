@@ -26,10 +26,11 @@ export default defineTool({
         await element.dispose();
       }
     }
+    const style = [tab.pointer?.screenshotStyle, tab.activity?.screenshotStyle].filter(Boolean).join("\n");
     const buffer = await tab.page.screenshot({
       type: "png",
       fullPage: full_page,
-      ...(tab.pointer ? { style: tab.pointer.screenshotStyle } : {}),
+      ...(style ? { style } : {}),
       ...(clip ? { clip } : {}),
     });
     return { image: { mime_type: "image/png", base64: buffer.toString("base64") } };
