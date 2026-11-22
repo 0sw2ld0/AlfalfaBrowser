@@ -391,6 +391,10 @@ La política está en `~/.cuybrowser/policy.yaml`. Se crea en el primer arranque
 
 **Límites conocidos:** un agente con acceso libre a tus archivos puede editar `policy.yaml`, así que para ese caso hay que aislarlo a nivel de sistema operativo. El aviso de prompt injection es orientativo y no detecta todos los ataques.
 
+### Prueba reproducible de rechazo de un formulario
+
+El [ejemplo en localhost](docs/pruebas/rechazo-formulario/README.md) comprueba que el servidor no recibe el POST del formulario rechazado. Incluye los resultados de AlfalfaCode y VS Code.
+
 ### Auditoría reciente
 
 Los clientes pueden consultar `audit_recent` por MCP, CLI o `POST /v1/tools/audit_recent`

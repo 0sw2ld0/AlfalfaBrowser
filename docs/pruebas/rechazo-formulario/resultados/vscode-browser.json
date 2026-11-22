@@ -1,0 +1,9 @@
+{
+  "runner": "vscode",
+  "test": "browser",
+  "requested": "CONFIRMATION_REQUIRED",
+  "decision": "CONFIRMATION_DENIED",
+  "before": 0,
+  "after": 0,
+  "positiveControl": 1
+}
