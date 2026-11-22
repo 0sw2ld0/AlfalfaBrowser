@@ -11,7 +11,7 @@ Construir una herramienta que permita a cualquier agente de IA navegar, leer e i
 | Interfaz | Para quién |
 |---|---|
 | **MCP (stdio)** | Clientes MCP: Claude Desktop, Claude Code, Cursor, orquestadores propios |
-| **CLI** (`cuybrowser <comando>`) | Agentes con acceso a terminal, guiados por un `AGENTS.md` / `SKILL.md` |
+| **CLI** (`alfalfabrowser <comando>`) | Agentes con acceso a terminal, guiados por un `AGENTS.md` / `SKILL.md` |
 | **HTTP local** (`curl`) | Scripts, automatizaciones, cualquier lenguaje |
 
 **Principio rector:** toda la lógica vive en un núcleo (daemon). Las tres interfaces son adaptadores delgados sin lógica propia. Una herramienta se define **una sola vez** y aparece automáticamente en las tres interfaces y en la documentación generada.
@@ -27,12 +27,12 @@ Construir una herramienta que permita a cualquier agente de IA navegar, leer e i
 
 - **Lenguaje:** TypeScript sobre Node.js ≥ 20.
 - **Control del navegador:** `playwright-core` más sesiones CDP directas donde haga falta (árbol de accesibilidad, `backendNodeId`).
-- **Navegador:** usa uno ya instalado, sin descargar nada por su cuenta. Los busca por su ruta habitual y los lanza con `executablePath`, en este orden: Google Chrome, Microsoft Edge, Brave, Chromium y Arc (solo en macOS), y por último el Chromium de Playwright si la persona lo descargó con `cuybrowser install-browser` (§3.2).
+- **Navegador:** usa uno ya instalado, sin descargar nada por su cuenta. Los busca por su ruta habitual y los lanza con `executablePath`, en este orden: Google Chrome, Microsoft Edge, Brave, Chromium y Arc (solo en macOS), y por último el Chromium de Playwright si la persona lo descargó con `alfalfabrowser install-browser` (§3.2).
 - **Esquemas:** `zod` como fuente única de verdad para parámetros y respuestas.
 - **MCP:** SDK oficial `@modelcontextprotocol/sdk`, transporte stdio.
 - **CLI:** `commander` o equivalente ligero.
 - **HTTP:** servidor nativo de Node o `fastify`; solo escucha en `127.0.0.1`.
-- **Distribución:** paquete npm (`npx cuybrowser`) y, en un hito posterior, binarios únicos con `bun build --compile` para macOS, Linux y Windows.
+- **Distribución:** paquete npm (`npx alfalfabrowser`) y, en un hito posterior, binarios únicos con `bun build --compile` para macOS, Linux y Windows.
 - **Plataformas:** macOS primero; Linux y Windows se incorporan en el hito 3.
 
 ---
@@ -68,8 +68,8 @@ Construir una herramienta que permita a cualquier agente de IA navegar, leer e i
 - Sin elegir, se prueban en orden los instalados: Google Chrome, Microsoft Edge, Brave, Chromium, Arc y el Chromium de Playwright. Si uno no se abre, se pasa al siguiente y se añade un aviso a `warnings`.
 - `start` acepta `browser`: `chrome`, `msedge`, `brave`, `chromium`, `arc` o la ruta absoluta de un ejecutable (en macOS también la carpeta `.app`). Con él solo se prueba ese navegador; `chromium` abarca el del sistema y, después, el de Playwright.
 - La variable `CUYBROWSER_BROWSER` tiene el mismo efecto que `browser`. La lee el cliente que llama a `start` y no el daemon, que pudo arrancar antes con otro entorno.
-- `start` y `status` devuelven `browser` (nombre) y `browser_path` (ejecutable). `cuybrowser browsers` lista los encontrados y marca el que se usará.
-- Sin ninguno, `start` devuelve `NO_BROWSER` con la pista de `cuybrowser install-browser`. Esa orden descarga una sola vez el Chromium de Playwright (unos 190 MB) en `~/.cuybrowser/browsers/`, o en `PLAYWRIGHT_BROWSERS_PATH` si está definida, y pide confirmación salvo con `--yes`. No es una herramienta MCP ni HTTP: nada se descarga sin que la persona lo pida.
+- `start` y `status` devuelven `browser` (nombre) y `browser_path` (ejecutable). `alfalfabrowser browsers` lista los encontrados y marca el que se usará.
+- Sin ninguno, `start` devuelve `NO_BROWSER` con la pista de `alfalfabrowser install-browser`. Esa orden descarga una sola vez el Chromium de Playwright (unos 190 MB) en `~/.cuybrowser/browsers/`, o en `PLAYWRIGHT_BROWSERS_PATH` si está definida, y pide confirmación salvo con `--yes`. No es una herramienta MCP ni HTTP: nada se descarga sin que la persona lo pida.
 
 Toda la interacción con el navegador pasa por una interfaz `BrowserDriver`, para poder añadir modos sin tocar las herramientas.
 
@@ -89,9 +89,9 @@ defineTool({
 
 A partir del registro se generan automáticamente:
 - las herramientas MCP (nombre, descripción y JSON Schema);
-- los subcomandos del CLI (`cuybrowser click --ref e12`, con argumentos posicionales donde tenga sentido: `cuybrowser click e12`);
+- los subcomandos del CLI (`alfalfabrowser click --ref e12`, con argumentos posicionales donde tenga sentido: `alfalfabrowser click e12`);
 - las rutas HTTP (`POST /v1/tools/click` con cuerpo JSON);
-- la documentación: `cuybrowser docs --format agents-md|skill-md|markdown`.
+- la documentación: `alfalfabrowser docs --format agents-md|skill-md|markdown`.
 
 **Prohibido** implementar lógica dentro de los adaptadores MCP, CLI o HTTP.
 
@@ -231,7 +231,7 @@ audit:
    |---|---|---|
    | `native-dialog` (por defecto) | Diálogo del sistema operativo abierto por el daemon, con una descripción que genera el propio daemon | Alta: el agente no puede responderlo por las interfaces de AlfalfaBrowser |
    | `elicitation` (opcional, solo MCP) | Formulario de *elicitation* del cliente MCP | Media: depende del cliente, y un orquestador podría responder sin humano |
-   | `cli` (opcional) | El usuario ejecuta `cuybrowser approve <id>` o `cuybrowser deny <id>` | Baja: un agente con terminal podría ejecutarlo; solo para entornos sin interfaz gráfica de confianza |
+   | `cli` (opcional) | El usuario ejecuta `alfalfabrowser approve <id>` o `alfalfabrowser deny <id>` | Baja: un agente con terminal podría ejecutarlo; solo para entornos sin interfaz gráfica de confianza |
 
 3. **Sin degradación automática:** si el canal configurado no está disponible (por ejemplo, sin sesión gráfica o sin `zenity`/`kdialog` en Linux), `confirm` devuelve `APPROVAL_UNAVAILABLE` y la acción no se ejecuta. Nunca se pasa a un canal más débil sin que el usuario lo configure.
 4. Si el humano rechaza o el id expira, `confirm` devuelve `CONFIRMATION_DENIED`.
@@ -263,23 +263,23 @@ audit:
 ### 7.1 CLI
 
 ```bash
-cuybrowser start [--mode launch|attach] [--profile trabajo] [--cdp http://localhost:9222]
-cuybrowser navigate https://example.com
-cuybrowser snapshot [--diff] [--scope e2]
-cuybrowser click e6
-cuybrowser type e3 "hola@correo.com" [--submit]
-cuybrowser screenshot [--ref e2] [--out shot.png]
-cuybrowser confirm <id>   # solicita la aprobación humana y espera (§6.2)
-cuybrowser approve <id>   # solo con approval: cli; lo ejecuta el usuario
-cuybrowser deny <id>      # solo con approval: cli; lo ejecuta el usuario
-cuybrowser docs --format agents-md > AGENTS.md
-cuybrowser mcp            # inicia el servidor MCP por stdio
-cuybrowser serve --http   # habilita la API HTTP
+alfalfabrowser start [--mode launch|attach] [--profile trabajo] [--cdp http://localhost:9222]
+alfalfabrowser navigate https://example.com
+alfalfabrowser snapshot [--diff] [--scope e2]
+alfalfabrowser click e6
+alfalfabrowser type e3 "hola@correo.com" [--submit]
+alfalfabrowser screenshot [--ref e2] [--out shot.png]
+alfalfabrowser confirm <id>   # solicita la aprobación humana y espera (§6.2)
+alfalfabrowser approve <id>   # solo con approval: cli; lo ejecuta el usuario
+alfalfabrowser deny <id>      # solo con approval: cli; lo ejecuta el usuario
+alfalfabrowser docs --format agents-md > AGENTS.md
+alfalfabrowser mcp            # inicia el servidor MCP por stdio
+alfalfabrowser serve --http   # habilita la API HTTP
 ```
 
 ### 7.2 MCP
-- `cuybrowser mcp` arranca el servidor stdio y se conecta al daemon (o lo arranca).
-- Nombres de herramienta con prefijo configurable (por defecto `browser_`). Los nombres del registro no llevan prefijo: `start` es `browser_start` en MCP, `cuybrowser start` en el CLI y `POST /v1/tools/start` en HTTP.
+- `alfalfabrowser mcp` arranca el servidor stdio y se conecta al daemon (o lo arranca).
+- Nombres de herramienta con prefijo configurable (por defecto `browser_`). Los nombres del registro no llevan prefijo: `start` es `browser_start` en MCP, `alfalfabrowser start` en el CLI y `POST /v1/tools/start` en HTTP.
 - Incluir en el README la configuración lista para copiar en Claude Desktop, Claude Code y Cursor.
 
 ### 7.3 HTTP
@@ -294,7 +294,7 @@ curl -s -H "Authorization: Bearer $(cat ~/.cuybrowser/token)" \
 - `GET /v1/events` (SSE) emite eventos de consola, red, diálogos y navegación.
 
 ### 7.4 Documentación generada para agentes sin MCP
-`cuybrowser docs --format agents-md` produce un `AGENTS.md` autocontenido con:
+`alfalfabrowser docs --format agents-md` produce un `AGENTS.md` autocontenido con:
 - instalación y arranque;
 - el ciclo de trabajo recomendado (snapshot → acción → wait/diff);
 - la referencia de cada comando, generada del registro;
@@ -307,7 +307,7 @@ Debe mantenerse sincronizado con el código **por construcción**: hay un test q
 ## 8. Estructura del repositorio
 
 ```
-cuybrowser/
+alfalfabrowser/
 ├─ src/
 │  ├─ core/
 │  │  ├─ daemon.ts
@@ -352,7 +352,7 @@ cuybrowser/
 - **Tarea de agente de punta a punta:** un script que, usando solo el CLI, completa un formulario de 3 pasos en los fixtures.
 
 ### 9.2 Criterios de aceptación de v1
-- [ ] `npx cuybrowser start && npx cuybrowser navigate <url> && npx cuybrowser snapshot` funciona en macOS con Chrome instalado, y también sin Chrome con otro navegador compatible o con el Chromium de `install-browser`.
+- [ ] `npx alfalfabrowser start && npx alfalfabrowser navigate <url> && npx alfalfabrowser snapshot` funciona en macOS con Chrome instalado, y también sin Chrome con otro navegador compatible o con el Chromium de `install-browser`.
 - [ ] Claude Desktop y Claude Code pueden usar todas las herramientas vía MCP con la configuración del README.
 - [ ] Un agente sin MCP, usando solo el `AGENTS.md` generado, completa la tarea E2E de formulario.
 - [ ] Todas las pruebas de paridad y de seguridad pasan.
@@ -376,6 +376,6 @@ cuybrowser/
 - Firefox y Safari.
 
 ## 12. Decisiones tomadas
-- Nombre del proyecto: AlfalfaBrowser; paquete y binario: `cuybrowser`.
+- Nombre del proyecto: AlfalfaBrowser; paquete y binario: `alfalfabrowser`.
 - Licencia: MIT.
 - Puerto HTTP por defecto: 47777.

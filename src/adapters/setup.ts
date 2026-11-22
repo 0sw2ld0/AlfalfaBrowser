@@ -79,7 +79,7 @@ function listClients(home: string, paths: Record<Client, string>): void {
   for (const client of CLIENTS) {
     console.log(`${NAMES[client]} (${client}): ${detected[client] ? "detectado" : "no detectado"}`);
   }
-  console.log("Para registrar AlfalfaBrowser en un cliente, ejecuta cuybrowser setup <cliente>.");
+  console.log("Para registrar AlfalfaBrowser en un cliente, ejecuta alfalfabrowser setup <cliente>.");
 }
 
 function readConfig(path: string): ConfigFile | undefined {

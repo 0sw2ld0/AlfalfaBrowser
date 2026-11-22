@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { mkdirSync, writeFileSync } from "node:fs";
-import { basename, dirname, join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Argument, Command, Option } from "commander";
 import type { ToolResponse } from "../core/errors.js";
@@ -13,10 +13,7 @@ import { callTool, daemonInfo, resolveApproval, stopDaemon } from "../ipc/client
 import { tools } from "../tools/index.js";
 import { CLIENTS, setupMcp, type Client } from "./setup.js";
 
-const invocationNames = [process.argv[1] ?? "", process.execPath].map((path) => basename(path));
-const commandName = invocationNames.some((name) => /^alfalfabrowser(?:$|[.-])/.test(name))
-  ? "alfalfabrowser"
-  : "cuybrowser";
+const commandName = "alfalfabrowser";
 
 interface ImageData {
   image: { mime_type: string; base64: string };

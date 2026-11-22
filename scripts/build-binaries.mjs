@@ -2,15 +2,15 @@
 // Compila un binario por plataforma en release/. Uso: node scripts/build-binaries.mjs [--current]
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const TARGETS = [
-  ["bun-darwin-arm64", "cuybrowser-macos-arm64"],
-  ["bun-darwin-x64", "cuybrowser-macos-x64"],
-  ["bun-linux-x64", "cuybrowser-linux-x64"],
-  ["bun-linux-arm64", "cuybrowser-linux-arm64"],
-  ["bun-windows-x64", "cuybrowser-windows-x64.exe"],
+  ["bun-darwin-arm64", "alfalfabrowser-macos-arm64"],
+  ["bun-darwin-x64", "alfalfabrowser-macos-x64"],
+  ["bun-linux-x64", "alfalfabrowser-linux-x64"],
+  ["bun-linux-arm64", "alfalfabrowser-linux-arm64"],
+  ["bun-windows-x64", "alfalfabrowser-windows-x64.exe"],
 ];
 
 const out = "release";
@@ -21,7 +21,7 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 
 const extension = process.platform === "win32" ? ".exe" : "";
-const targets = onlyCurrent ? [[null, `cuybrowser${extension}`]] : TARGETS;
+const targets = onlyCurrent ? [[null, `alfalfabrowser${extension}`]] : TARGETS;
 const checksums = [];
 for (const [target, name] of targets) {
   const path = join(out, name);
@@ -33,11 +33,6 @@ for (const [target, name] of targets) {
   );
   const digest = createHash("sha256").update(readFileSync(path)).digest("hex");
   checksums.push(`${digest}  ${name}`);
-  if (onlyCurrent) {
-    const alias = `alfalfabrowser${extension}`;
-    copyFileSync(path, join(out, alias));
-    checksums.push(`${digest}  ${alias}`);
-  }
 }
 writeFileSync(join(out, "SHA256SUMS"), `${checksums.join("\n")}\n`);
 console.log(`Listo: ${checksums.length} binarios en ${out}/`);

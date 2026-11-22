@@ -79,7 +79,7 @@ describe("orden de los navegadores", () => {
     const error = errorOf(() => resolveBrowsers(undefined, system([])));
     expect(error.code).toBe("NO_BROWSER");
     expect(error.message).toContain("Google Chrome, Microsoft Edge, Brave, Chromium o Arc");
-    expect(error.hint).toContain("cuybrowser install-browser");
+    expect(error.hint).toContain("alfalfabrowser install-browser");
     expect(error.hint).toContain("nunca lo descarga por su cuenta");
   });
 

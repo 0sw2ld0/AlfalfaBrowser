@@ -128,7 +128,7 @@ function customPath(path: string, system: BrowserSystem): string {
 }
 
 function noBrowserHint(install = "uno de ellos"): string {
-  return `Instala ${install} o ejecuta \`cuybrowser install-browser\` para descargar una sola vez el ` +
+  return `Instala ${install} o ejecuta \`alfalfabrowser install-browser\` para descargar una sola vez el ` +
     `${PLAYWRIGHT_CHROMIUM_NAME} (${PLAYWRIGHT_CHROMIUM_SIZE}). AlfalfaBrowser nunca lo descarga por su cuenta.`;
 }
 

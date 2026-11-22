@@ -22,6 +22,6 @@ describe("documentación generada", () => {
       const doc = generateDocs(tools, format);
       for (const tool of tools) expect(doc).toContain(`### ${tool.name}\n`);
     }
-    expect(generateDocs(tools, "skill-md").startsWith("---\nname: cuybrowser\n")).toBe(true);
+    expect(generateDocs(tools, "skill-md").startsWith("---\nname: alfalfabrowser\n")).toBe(true);
   });
 });

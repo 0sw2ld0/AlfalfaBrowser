@@ -63,7 +63,7 @@ jobs:
         run: |
           npm run build:bin -- --current
           if [[ "$RUNNER_OS" == 'Windows' ]]; then
-            node scripts/smoke-binary.mjs release/cuybrowser.exe
+            node scripts/smoke-binary.mjs release/alfalfabrowser.exe
           else
-            node scripts/smoke-binary.mjs release/cuybrowser
+            node scripts/smoke-binary.mjs release/alfalfabrowser
           fi

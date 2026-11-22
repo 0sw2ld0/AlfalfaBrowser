@@ -38,12 +38,12 @@ jobs:
         run: npm run build:bin
 
       - name: Probar Chromium con el binario compilado
-        run: node scripts/smoke-binary.mjs release/cuybrowser-macos-arm64
+        run: node scripts/smoke-binary.mjs release/alfalfabrowser-macos-arm64
 
       - name: Empaquetar para npm
         run: |
           npm pack --pack-destination release
-          cd release && shasum -a 256 cuybrowser-*.tgz >> SHA256SUMS
+          cd release && shasum -a 256 alfalfabrowser-*.tgz >> SHA256SUMS
 
       # Queda como borrador: una persona la revisa y la publica desde GitHub.
       - name: Crear la release

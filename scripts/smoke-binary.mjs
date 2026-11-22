@@ -21,7 +21,7 @@ const hidden = `${dependency}.smoke-${randomUUID()}`;
 const temp = realpathSync.native(mkdtempSync(join(process.platform === "darwin" ? "/private/tmp" : tmpdir(), "cb-bin-")));
 const home = join(temp, "home");
 const cuyHome = join(temp, "cuy");
-const binary = join(temp, process.platform === "win32" ? "cuybrowser.exe" : "cuybrowser");
+const binary = join(temp, process.platform === "win32" ? "alfalfabrowser.exe" : "alfalfabrowser");
 const marker = "Página ficticia del ejecutable autónomo";
 const server = createServer((_, response) => {
   response.setHeader("Content-Type", "text/html; charset=utf-8");
