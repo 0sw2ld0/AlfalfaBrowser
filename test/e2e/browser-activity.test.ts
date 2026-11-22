@@ -28,7 +28,7 @@ it("renders only in the target tab, preserves page input and removes the decorat
   const other = await page.context().newPage();
   await page.route("https://activity.test/**", (route) => route.fulfill({
     contentType: "text/html",
-    body: '<button style="position:fixed;bottom:10px;right:10px" onclick="this.textContent=\'Clicked\'">Click me</button>',
+    body: '<button style="position:fixed;top:12px;left:50%;transform:translateX(-50%)" onclick="this.textContent=\'Clicked\'">Click me</button>',
   }));
   try {
     await page.bringToFront();

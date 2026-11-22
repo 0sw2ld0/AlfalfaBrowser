@@ -84,7 +84,11 @@ export class BrowserActivity {
           border: "0",
           "border-radius": "10px",
           background: "transparent",
-          "box-shadow": "inset 0 0 0 3px #64c756",
+          "box-shadow": [
+            "inset 0 0 0 2px #64c756",
+            "inset 0 0 16px 3px rgb(76 193 98 / 45%)",
+            "inset 0 0 44px 6px rgb(76 193 98 / 24%)",
+          ].join(", "),
           "pointer-events": "none",
           "z-index": "2147483646",
         };
@@ -97,16 +101,20 @@ export class BrowserActivity {
           visibility: "inherit",
           display: "block",
           position: "absolute",
-          bottom: "12px",
-          right: "12px",
+          top: "12px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "max-content",
           "max-width": "calc(100% - 24px)",
           "box-sizing": "border-box",
-          padding: "5px 10px",
-          "border-radius": "6px",
+          padding: "6px 13px",
+          border: "1px solid #89ca97",
+          "border-radius": "999px",
           background: "#1c4529",
           color: "#ffffff",
+          "text-align": "center",
           font: "600 13px/1.4 system-ui, sans-serif",
-          "box-shadow": "0 1px 4px #0005",
+          "box-shadow": "0 2px 8px #142e2055",
         };
         for (const [name, value] of Object.entries(badgeStyle)) badge.style.setProperty(name, value);
         overlay.attachShadow({ mode: "closed" }).append(badge);
