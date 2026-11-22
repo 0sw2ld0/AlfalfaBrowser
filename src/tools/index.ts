@@ -12,6 +12,7 @@ import policy_show from "./policy_show.js";
 import upload_file from "./upload_file.js";
 import { back, forward, reload } from "./history.js";
 import hover from "./hover.js";
+import local_tab_action from "./local_tab_action.js";
 import navigate from "./navigate.js";
 import network_requests from "./network_requests.js";
 import press_key from "./press_key.js";
@@ -53,6 +54,7 @@ export const tools: readonly AnyTool[] = [
   console_messages,
   network_requests,
   click,
+  local_tab_action,
   type_,
   select_option,
   press_key,

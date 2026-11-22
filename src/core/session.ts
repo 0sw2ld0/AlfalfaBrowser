@@ -6,12 +6,15 @@ import type { BrowserDriver, StartOptions } from "./driver/types.js";
 import { CuyError } from "./errors.js";
 import { EventBuffer } from "./events.js";
 import { hasDomainRules, isUrlAllowed, type Policy } from "./security/policy.js";
+import { httpOrigin } from "./security/local-network.js";
 import { LocalNetworkProxy } from "./security/local-proxy.js";
 import { OriginGuard } from "./security/origin-guard.js";
 import { RefTable } from "./snapshot/refs.js";
 import type { FlatLine } from "./snapshot/render.js";
 
 export class Tab {
+  localControlOrigin: string | null = null;
+  documentGeneration = 0;
   originReady: Promise<void> = Promise.resolve();
   readonly refs = new RefTable();
   readonly pointer?: BrowserPointer;
@@ -34,6 +37,11 @@ export class Tab {
     showsPointer = false,
   ) {
     if (showsPointer) this.pointer = new BrowserPointer(page);
+    page.on("framenavigated", (frame) => {
+      if (frame !== page.mainFrame()) return;
+      this.documentGeneration++;
+      if (httpOrigin(frame.url()) !== this.localControlOrigin) this.localControlOrigin = null;
+    });
   }
 
   cdp(): Promise<CDPSession> {
@@ -161,6 +169,9 @@ export class Session {
   /** Identidad del perfil propio, sin inspeccionar páginas ni sesiones personales. */
   get auditProfile(): string | null { return this.driver?.profile ?? null; }
   get auditAttached(): boolean { return this.driver?.mode === "attach"; }
+  get usesManagedChrome(): boolean {
+    return this.driver?.mode === "launch" && this.driver.browser?.id === "chrome";
+  }
 
   get handingOff(): boolean { return this.handoffAbort !== null; }
 

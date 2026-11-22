@@ -273,6 +273,20 @@ cuybrowser click <ref> [opciones]
 - `--button`: Botón del ratón. Valores: left, right, middle. Por defecto: left.
 - `--double`: Hace doble clic. Por defecto: false.
 
+### local_tab_action
+
+Pulsa un elemento o rellena un campo de la pestaña local autorizada de Chrome.
+
+```bash
+cuybrowser local_tab_action [opciones]
+```
+
+- `--tab`: Id de la pestaña activa devuelto por status. Obligatorio.
+- `--origin`: Origen exacto de localhost, incluido el puerto. Obligatorio.
+- `--ref`: Ref del documento principal devuelta por snapshot. Obligatorio.
+- `--action`: Clic semántico o reemplazar el texto del campo. Valores: click, type. Obligatorio.
+- `--text`: Texto para type.
+
 ### type
 
 Escribe texto en un campo identificado por su ref. Rechaza los campos sensibles.

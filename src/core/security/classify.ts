@@ -6,6 +6,8 @@ import { classifySensitive, type SensitiveKind } from "./sensitive.js";
 
 export interface Gate {
   kinds: ConfirmKind[];
+  mandatory?: boolean;
+  scope?: number;
   description: string;
 }
 

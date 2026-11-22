@@ -136,8 +136,11 @@ export class ResolvedElement {
   }
 }
 
-export async function resolveElement(tab: Tab, ref: string): Promise<ResolvedElement> {
+export async function resolveElement(tab: Tab, ref: string, isolatedMain = false): Promise<ResolvedElement> {
   const { backendNodeId, frameKey } = tab.refs.resolve(ref);
+  if (isolatedMain && frameKey !== "") {
+    throw new CuyError("BLOCKED_BY_POLICY", "El control local solo funciona en el documento principal.");
+  }
   await tab.cdp();
   const cdp = tab.sessionFor(frameKey);
   const stale = () =>
@@ -146,7 +149,15 @@ export async function resolveElement(tab: Tab, ref: string): Promise<ResolvedEle
   const objectGroup = `cuybrowser-${++objectGroups}`;
   let objectId: string | undefined;
   try {
-    const { object } = await cdp.send("DOM.resolveNode", { backendNodeId, objectGroup });
+    const context = isolatedMain
+      ? await cdp.send("Page.createIsolatedWorld", {
+          frameId: (await cdp.send("Page.getFrameTree")).frameTree.frame.id,
+          worldName: "alfalfabrowser-local-control",
+        })
+      : undefined;
+    const { object } = await cdp.send("DOM.resolveNode", {
+      backendNodeId, objectGroup, executionContextId: context?.executionContextId,
+    });
     objectId = object.objectId;
   } catch {
     throw stale();

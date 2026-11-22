@@ -135,7 +135,7 @@ export class Core {
   }
 
   private fingerprint(gate: Gate | null, tab: Tab | null): string {
-    return JSON.stringify([gate?.kinds, gate?.description, tab?.id, tab?.page.url()]);
+    return JSON.stringify([gate?.kinds, gate?.description, gate?.scope, tab?.id, tab?.page.url()]);
   }
 
   private async execute(name: string, rawParams: unknown, approvedFingerprint?: string): Promise<ToolResponse> {
@@ -200,7 +200,7 @@ export class Core {
             "Toma un snapshot nuevo y solicita de nuevo la acción.",
           );
         }
-      } else if (gate && gate.kinds.some((kind) => policy.confirm.includes(kind))) {
+      } else if (gate && (gate.mandatory || gate.kinds.some((kind) => policy.confirm.includes(kind)))) {
         const pending = this.store.create(gate.description, () =>
           this.enqueue(() => this.execute(name, parsed.data, fingerprint)),
         );
